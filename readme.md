@@ -1,14 +1,3 @@
-#standardSQL   Average number of inventors per country  ?
+#patent-detective
 
-```sql
-SELECT AVG(num_inventors), COUNT(*) AS cnt, country_code, filing_year, STRING_AGG(publication_number LIMIT 10) AS example_publications
-FROM (
-  SELECT ANY_VALUE(publication_number) AS publication_number, ANY_VALUE(ARRAY_LENGTH(inventor)) AS num_inventors, ANY_VALUE(country_code) AS country_code, ANY_VALUE(CAST(FLOOR(filing_date / (5*10000)) AS INT64))*5 AS filing_year
-  FROM `patents-public-data.patents.publications` AS pubs
-  WHERE filing_date > 19000000 AND ARRAY_LENGTH(inventor) > 0
-  GROUP BY application_number
-)
-GROUP BY filing_year, country_code
-HAVING cnt > 100
-ORDER BY filing_year
-```
+This project provides some static analysis over public data set of patents available on google bigquery. For more knowledge about dataset refer to this article https://cloud.google.com/blog/products/gcp/google-patents-public-datasets-connecting-public-paid-and-private-patent-data. This project contains a notebook which shows some plots depicting the analysis results. We have used table **publication** to do the analysis. I have also created a big_query helper class which I will be using to fetch the result from big query. Apart from that there is one more python file patent_detective which uses bigquery_helper to fetch data and plot the data using python matplotlib or other libraries.
